@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/DMN/20151101/dmn.xsd" xmlns:camunda="http://camunda.org/schema/1.0/dmn" id="definitions_059edfo" name="definitions" namespace="http://camunda.org/schema/1.0/dmn">
+  <decision id="Dessert-of-the-day" name="Dessert-of-the-day">
+    <decisionTable id="decisionTable">
+      <input id="input1" label="DayOfTheWeek" camunda:inputVariable="order_entry_day_of_week">
+        <inputExpression id="inputExpression1" typeRef="string">
+          <text>order_entry_day_of_week</text>
+        </inputExpression>
+      </input>
+      <output id="output1" label="Dessert" name="Dessert" typeRef="string" />
+      <rule id="row-317176436-1">
+        <inputEntry id="UnaryTests_0jcrizr">
+          <text><![CDATA["Monday"]]></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1uw12zr">
+          <text><![CDATA["Chocolate Cake"]]></text>
+        </outputEntry>
+      </rule>
+      <rule id="row-317176436-2">
+        <inputEntry id="UnaryTests_0bkjdxs">
+          <text><![CDATA["Tuesday"]]></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0yhgict">
+          <text><![CDATA["Cheesecake"]]></text>
+        </outputEntry>
+      </rule>
+      <rule id="row-317176436-3">
+        <inputEntry id="UnaryTests_10flz7v">
+          <text><![CDATA["Wednesday"]]></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1oiizvy">
+          <text><![CDATA["Ice Cream"]]></text>
+        </outputEntry>
+      </rule>
+      <rule id="row-317176436-4">
+        <inputEntry id="UnaryTests_1duwcs2">
+          <text><![CDATA["Thursday"]]></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_03jrf52">
+          <text><![CDATA["Creme Brulee"]]></text>
+        </outputEntry>
+      </rule>
+      <rule id="row-317176436-5">
+        <inputEntry id="UnaryTests_0c8tdd0">
+          <text><![CDATA["Friday"]]></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_068o45p">
+          <text><![CDATA["Tiramisu"]]></text>
+        </outputEntry>
+      </rule>
+      <rule id="row-317176436-6">
+        <inputEntry id="UnaryTests_0zna12y">
+          <text><![CDATA["Saturday"]]></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_06nsk1q">
+          <text><![CDATA["Cupcakes"]]></text>
+        </outputEntry>
+      </rule>
+      <rule id="row-317176436-7">
+        <inputEntry id="UnaryTests_05rm4x9">
+          <text><![CDATA["Sunday"]]></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1fdqmxh">
+          <text><![CDATA["Brownies"]]></text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+</definitions>

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/DMN/20151101/dmn.xsd" xmlns:camunda="http://camunda.org/schema/1.0/dmn" id="definitions_0h8h7oy" name="definitions" namespace="http://camunda.org/schema/1.0/dmn">
+  <decision id="ValidPaymentTypes" name="ValidPaymentTypes">
+    <decisionTable id="decisionTable" hitPolicy="FIRST">
+      <input id="input1" label="PaymentType" camunda:inputVariable="Restaurant_Customer_Payment_Method">
+        <inputExpression id="inputExpression1" typeRef="string">
+          <text>Restaurant_Customer_Payment_Method</text>
+        </inputExpression>
+      </input>
+      <output id="output1" label="Accepted" name="ValidPaymentType" typeRef="string" />
+      <rule id="row-13056549-8">
+        <inputEntry id="UnaryTests_0c37czu">
+          <text><![CDATA["Cash"]]></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1qz0qlk">
+          <text><![CDATA["True"]]></text>
+        </outputEntry>
+      </rule>
+      <rule id="row-13056549-9">
+        <inputEntry id="UnaryTests_1fcz6bu">
+          <text><![CDATA["Visa"]]></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_18kiff2">
+          <text><![CDATA["True"]]></text>
+        </outputEntry>
+      </rule>
+      <rule id="row-13056549-10">
+        <inputEntry id="UnaryTests_0th3qls">
+          <text><![CDATA["Mastercard"]]></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0kkovxp">
+          <text><![CDATA["True"]]></text>
+        </outputEntry>
+      </rule>
+      <rule id="row-13056549-11">
+        <inputEntry id="UnaryTests_0msukxt">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1jv2ofj">
+          <text><![CDATA["False"]]></text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+</definitions>
