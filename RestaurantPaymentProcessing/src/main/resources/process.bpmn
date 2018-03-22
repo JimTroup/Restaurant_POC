@@ -1,0 +1,406 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="1.11.3">
+  <bpmn:process id="Restaurant_Process_Customer_Payment" name="Restaurant Process Customer Payment" isExecutable="true">
+    <bpmn:startEvent id="StartEventProcessStarted" name="Process&#10;started">
+      <bpmn:extensionElements>
+        <camunda:formData />
+      </bpmn:extensionElements>
+      <bpmn:outgoing>SequenceFlow_0yg5f1j</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:endEvent id="EndEventProcessEnded" name="Process&#10;ended">
+      <bpmn:incoming>SequenceFlow_18xtayx</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:task id="Task_1cyos90" name="Process Payment">
+      <bpmn:incoming>SequenceFlow_ValidPaymentType</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_1o6wknp</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Task_1k44lpb" name="Cash">
+      <bpmn:incoming>SequenceFlow_0wzfm42</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_1nft35c</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:sequenceFlow id="SequenceFlow_0yg5f1j" sourceRef="StartEventProcessStarted" targetRef="Task_Retrieve_Bill_Amount_Via_Form" />
+    <bpmn:sequenceFlow id="SequenceFlow_0dbn0an" sourceRef="Task_1ju56sd" targetRef="Task_149gth2" />
+    <bpmn:scriptTask id="Task_1ju56sd" name="Print Receipt" scriptFormat="javascript">
+      <bpmn:incoming>SequenceFlow_0jftaq8</bpmn:incoming>
+      <bpmn:incoming>SequenceFlow_1nft35c</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_0dbn0an</bpmn:outgoing>
+      <bpmn:script><![CDATA[var isOutput = false;
+
+var logger = java.util.logging.Logger;
+var log = logger.getLogger("MY_JS_LOGGER");
+
+log.info("Completed Payment Step ");
+
+var system = java.lang.System;
+system.out.println("System out println - WhereDoesThisGo?");
+
+isOutput = true;
+
+isOutput;]]></bpmn:script>
+    </bpmn:scriptTask>
+    <bpmn:scriptTask id="Task_1igz0hp" name="Report bill amount">
+      <bpmn:incoming>SequenceFlow_1aeep4v</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_05bjmhm</bpmn:outgoing>
+      <bpmn:script><![CDATA[var isOutput = false;
+
+var logger = java.util.logging.Logger;
+var log = logger.getLogger("MY_JS_LOGGER");
+
+
+var myLong = execution.getVariable("Restaurant_Customer_Bill_Total");
+
+log.info("Started Payment Process ");
+log.info(myLong);
+
+var system = java.lang.System;
+system.out.println("System out println - WhereDoesThisGo?");
+
+isOutput = true;
+
+isOutput;]]></bpmn:script>
+    </bpmn:scriptTask>
+    <bpmn:sequenceFlow id="SequenceFlow_0jeo6zt" sourceRef="Task_0926zoo" targetRef="ExclusiveGateway_1n6mbb5" />
+    <bpmn:sequenceFlow id="SequenceFlow_1nft35c" sourceRef="Task_1k44lpb" targetRef="Task_1ju56sd" />
+    <bpmn:sequenceFlow id="SequenceFlow_1aeep4v" sourceRef="Task_Retrieve_Bill_Amount_Via_Form" targetRef="Task_1igz0hp" />
+    <bpmn:userTask id="Task_Retrieve_Bill_Amount_Via_Form" name="Retrieve Bill Amount via Form" camunda:assignee="demo">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="Restaurant_Customer_Bill_Total" label="Restaurant Customer Bill Total" type="string" />
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:incoming>SequenceFlow_0yg5f1j</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_1aeep4v</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="SequenceFlow_05bjmhm" sourceRef="Task_1igz0hp" targetRef="Task_0ym16ny" />
+    <bpmn:sequenceFlow id="SequenceFlow_19ts22f" sourceRef="Task_0ym16ny" targetRef="Task_0926zoo" />
+    <bpmn:userTask id="Task_0ym16ny" name="Request Form of Payment" camunda:assignee="demo">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="Restaurant_Customer_Payment_Method" label="Restaurant Customer Payment Method" type="string" defaultValue="Visa" />
+          <camunda:formField id="Restaurant_Customer_Card_Name" label="Credit Card Name" type="string" defaultValue="CardholdersName" />
+          <camunda:formField id="Restaurant_Customer_Card_Number" label="Card Number" type="string" defaultValue="1234123412341234" />
+          <camunda:formField id="Restaurant_Customer_Card_Expire" label="Card Expiration" type="string" defaultValue="01/24" />
+          <camunda:formField id="paymentrejectionreason" label="Payment Reject Reason" type="string" />
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:incoming>SequenceFlow_05bjmhm</bpmn:incoming>
+      <bpmn:incoming>SequenceFlow_180ubr6</bpmn:incoming>
+      <bpmn:incoming>SequenceFlow_0fzxbk7</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_19ts22f</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:businessRuleTask id="Task_0926zoo" name="Verify form of payment (DMN)" camunda:resultVariable="IsValidPaymentType" camunda:decisionRef="ValidPaymentTypes" camunda:mapDecisionResult="singleEntry">
+      <bpmn:incoming>SequenceFlow_19ts22f</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_0jeo6zt</bpmn:outgoing>
+    </bpmn:businessRuleTask>
+    <bpmn:exclusiveGateway id="ExclusiveGateway_1n6mbb5">
+      <bpmn:incoming>SequenceFlow_0jeo6zt</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_ValidPaymentType</bpmn:outgoing>
+      <bpmn:outgoing>SequenceFlow_180ubr6</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="SequenceFlow_ValidPaymentType" name="Valid Payment Type" sourceRef="ExclusiveGateway_1n6mbb5" targetRef="Task_1cyos90">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression"><![CDATA[${IsValidPaymentType.equals("True")}]]></bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="SequenceFlow_020spmd" sourceRef="Task_0yx73bt" targetRef="Task_0fbs6zs" />
+    <bpmn:sequenceFlow id="SequenceFlow_18xtayx" sourceRef="Task_149gth2" targetRef="EndEventProcessEnded" />
+    <bpmn:userTask id="Task_149gth2" name="Stop and review" camunda:assignee="demo">
+      <bpmn:incoming>SequenceFlow_0dbn0an</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_18xtayx</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="SequenceFlow_180ubr6" sourceRef="ExclusiveGateway_1n6mbb5" targetRef="Task_0ym16ny">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression"><![CDATA[${IsValidPaymentType.equals("False")}]]></bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="SequenceFlow_1o6wknp" sourceRef="Task_1cyos90" targetRef="ExclusiveGateway_102m6h6" />
+    <bpmn:exclusiveGateway id="ExclusiveGateway_102m6h6" name="Process &#10;Payment Type&#10;">
+      <bpmn:incoming>SequenceFlow_1o6wknp</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_0wzfm42</bpmn:outgoing>
+      <bpmn:outgoing>SequenceFlow_15j8kfa</bpmn:outgoing>
+      <bpmn:outgoing>SequenceFlow_0dvoybb</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="SequenceFlow_0wzfm42" name="Cash" sourceRef="ExclusiveGateway_102m6h6" targetRef="Task_1k44lpb">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression"><![CDATA[${Restaurant_Customer_Payment_Method.equals("Cash")}]]></bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="SequenceFlow_15j8kfa" name="Visa" sourceRef="ExclusiveGateway_102m6h6" targetRef="Task_1usxx24">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression"><![CDATA[${Restaurant_Customer_Payment_Method.equals("Visa")}]]></bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="SequenceFlow_0dvoybb" name="MasterCard" sourceRef="ExclusiveGateway_102m6h6" targetRef="Task_0yx73bt">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression"><![CDATA[${Restaurant_Customer_Payment_Method.equals("Mastercard")}]]></bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:exclusiveGateway id="ExclusiveGateway_1j6gdd9">
+      <bpmn:incoming>SequenceFlow_03lhkbg</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_0jftaq8</bpmn:outgoing>
+      <bpmn:outgoing>SequenceFlow_0fzxbk7</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="SequenceFlow_03lhkbg" sourceRef="Task_0fbs6zs" targetRef="ExclusiveGateway_1j6gdd9" />
+    <bpmn:sequenceFlow id="SequenceFlow_0jftaq8" name="Successful" sourceRef="ExclusiveGateway_1j6gdd9" targetRef="Task_1ju56sd">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression"><![CDATA[${paymentaccepted.equals("true")}]]></bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="SequenceFlow_0fzxbk7" sourceRef="ExclusiveGateway_1j6gdd9" targetRef="Task_0ym16ny">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression"><![CDATA[${paymentaccepted.equals("false")}]]></bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:scriptTask id="Task_0fbs6zs" name="Verify Payment Success" scriptFormat="javascript" camunda:resultVariable="paymentaccepted">
+      <bpmn:incoming>SequenceFlow_020spmd</bpmn:incoming>
+      <bpmn:incoming>SequenceFlow_0982okf</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_03lhkbg</bpmn:outgoing>
+      <bpmn:script><![CDATA[var S = org.camunda.spin.Spin.S;
+
+var isOutput = false;
+
+var myString = execution.getVariable("response");
+
+myVal = S(response).childElement('result').childElement('paymentaccepted').textContent();
+//execution.setVariable("response", myVal);
+
+paymentrejectionreason = S(response).childElement('result').childElement('paymentrejectionreason').textContent();
+execution.setVariable("paymentrejectionreason", paymentrejectionreason);
+
+var logger = java.util.logging.Logger;
+var log = logger.getLogger("MY_JS_LOGGER");
+
+log.info("js logging here for http rest call");
+log.info(myString);
+log.info("value of paymentaccepted is " + myVal);
+
+var system = java.lang.System;
+system.out.println("System out println - WhereDoesThisGo?");
+
+myVal;]]></bpmn:script>
+    </bpmn:scriptTask>
+    <bpmn:sequenceFlow id="SequenceFlow_0982okf" sourceRef="Task_1usxx24" targetRef="Task_0fbs6zs" />
+    <bpmn:serviceTask id="Task_1usxx24" name="Visa" camunda:type="external" camunda:topic="VerifyPayment">
+      <bpmn:extensionElements>
+        <camunda:connector>
+          <camunda:inputOutput>
+            <camunda:inputParameter name="url"><![CDATA[http://ql1ampdvas1/cgi-bin/lkw/web/camunda-demo-output.p?CreditCardType=${Restaurant_Customer_Payment_Method}&CreditCardAmount=${Restaurant_Customer_Bill_Total}&CreditCardNumber=${Restaurant_Customer_Card_Number}&CreditCardExpire=${Restaurant_Customer_Card_Expire}&CreditCardName=${Restaurant_Customer_Card_Name}]]></camunda:inputParameter>
+            <camunda:inputParameter name="method">GET</camunda:inputParameter>
+            <camunda:outputParameter name="response">${response}</camunda:outputParameter>
+          </camunda:inputOutput>
+          <camunda:connectorId>http-connector</camunda:connectorId>
+        </camunda:connector>
+      </bpmn:extensionElements>
+      <bpmn:incoming>SequenceFlow_15j8kfa</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_0982okf</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="Task_0yx73bt" name="Mastercard" camunda:type="external" camunda:topic="VerifyPayment">
+      <bpmn:extensionElements>
+        <camunda:connector>
+          <camunda:inputOutput>
+            <camunda:inputParameter name="url"><![CDATA[http://ql1ampdvas1/cgi-bin/lkw/web/camunda-demo-output.p?CreditCardType=${Restaurant_Customer_Payment_Method}&CreditCardAmount=${Restaurant_Customer_Bill_Total}&CreditCardNumber=${Restaurant_Customer_Card_Number}&CreditCardExpire=${Restaurant_Customer_Card_Expire}&CreditCardName=${Restaurant_Customer_Card_Name}]]></camunda:inputParameter>
+            <camunda:inputParameter name="method">GET</camunda:inputParameter>
+          </camunda:inputOutput>
+          <camunda:connectorId>http-connector</camunda:connectorId>
+        </camunda:connector>
+      </bpmn:extensionElements>
+      <bpmn:incoming>SequenceFlow_0dvoybb</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_020spmd</bpmn:outgoing>
+    </bpmn:serviceTask>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Restaurant_Process_Customer_Payment">
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEventProcessStarted">
+        <dc:Bounds x="-565" y="225" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="-567" y="261" width="41" height="24" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EndEvent_0fkea3f_di" bpmnElement="EndEventProcessEnded">
+        <dc:Bounds x="1730" y="225" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1728" y="261" width="41" height="24" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_1cyos90_di" bpmnElement="Task_1cyos90">
+        <dc:Bounds x="598" y="203" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_1k44lpb_di" bpmnElement="Task_1k44lpb">
+        <dc:Bounds x="907" y="68" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_0yg5f1j_di" bpmnElement="SequenceFlow_0yg5f1j">
+        <di:waypoint xsi:type="dc:Point" x="-529" y="243" />
+        <di:waypoint xsi:type="dc:Point" x="-455" y="243" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="-492" y="222" width="0" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_0dbn0an_di" bpmnElement="SequenceFlow_0dbn0an">
+        <di:waypoint xsi:type="dc:Point" x="1507" y="243" />
+        <di:waypoint xsi:type="dc:Point" x="1567" y="243" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1492" y="222" width="90" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="ScriptTask_0pf169t_di" bpmnElement="Task_1ju56sd">
+        <dc:Bounds x="1407" y="203" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ScriptTask_1h060rc_di" bpmnElement="Task_1igz0hp">
+        <dc:Bounds x="-293" y="203" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_0jeo6zt_di" bpmnElement="SequenceFlow_0jeo6zt">
+        <di:waypoint xsi:type="dc:Point" x="257" y="245" />
+        <di:waypoint xsi:type="dc:Point" x="407" y="243" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="287" y="223" width="90" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_1nft35c_di" bpmnElement="SequenceFlow_1nft35c">
+        <di:waypoint xsi:type="dc:Point" x="1007" y="108" />
+        <di:waypoint xsi:type="dc:Point" x="1457" y="108" />
+        <di:waypoint xsi:type="dc:Point" x="1457" y="203" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1187" y="87" width="90" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_1aeep4v_di" bpmnElement="SequenceFlow_1aeep4v">
+        <di:waypoint xsi:type="dc:Point" x="-355" y="243" />
+        <di:waypoint xsi:type="dc:Point" x="-293" y="243" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="-324" y="222" width="0" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="UserTask_0alazuc_di" bpmnElement="Task_Retrieve_Bill_Amount_Via_Form">
+        <dc:Bounds x="-455" y="203" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_05bjmhm_di" bpmnElement="SequenceFlow_05bjmhm">
+        <di:waypoint xsi:type="dc:Point" x="-193" y="243" />
+        <di:waypoint xsi:type="dc:Point" x="-107" y="243" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="-150" y="222" width="0" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_19ts22f_di" bpmnElement="SequenceFlow_19ts22f">
+        <di:waypoint xsi:type="dc:Point" x="-7" y="243" />
+        <di:waypoint xsi:type="dc:Point" x="137" y="243" />
+        <di:waypoint xsi:type="dc:Point" x="157" y="245" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="20" y="222" width="90" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="UserTask_0xp59ee_di" bpmnElement="Task_0ym16ny">
+        <dc:Bounds x="-107" y="203" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BusinessRuleTask_1yga7mo_di" bpmnElement="Task_0926zoo">
+        <dc:Bounds x="157" y="206" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ExclusiveGateway_1n6mbb5_di" bpmnElement="ExclusiveGateway_1n6mbb5" isMarkerVisible="true">
+        <dc:Bounds x="407.08799999999997" y="218" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="432.08799999999997" y="272" width="0" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_1g68o7r_di" bpmnElement="SequenceFlow_ValidPaymentType">
+        <di:waypoint xsi:type="dc:Point" x="457" y="243" />
+        <di:waypoint xsi:type="dc:Point" x="598" y="243" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="492.6294642857142" y="222" width="71" height="24" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_020spmd_di" bpmnElement="SequenceFlow_020spmd">
+        <di:waypoint xsi:type="dc:Point" x="1007" y="366" />
+        <di:waypoint xsi:type="dc:Point" x="1140" y="366" />
+        <di:waypoint xsi:type="dc:Point" x="1140" y="283" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1028.5" y="345" width="90" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_18xtayx_di" bpmnElement="SequenceFlow_18xtayx">
+        <di:waypoint xsi:type="dc:Point" x="1667" y="243" />
+        <di:waypoint xsi:type="dc:Point" x="1730" y="243" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1654" y="222" width="90" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="UserTask_0yfdhl6_di" bpmnElement="Task_149gth2">
+        <dc:Bounds x="1567" y="203" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_180ubr6_di" bpmnElement="SequenceFlow_180ubr6">
+        <di:waypoint xsi:type="dc:Point" x="432" y="268" />
+        <di:waypoint xsi:type="dc:Point" x="432" y="391" />
+        <di:waypoint xsi:type="dc:Point" x="-57" y="391" />
+        <di:waypoint xsi:type="dc:Point" x="-57" y="283" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="187.5" y="370" width="0" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_1o6wknp_di" bpmnElement="SequenceFlow_1o6wknp">
+        <di:waypoint xsi:type="dc:Point" x="698" y="243" />
+        <di:waypoint xsi:type="dc:Point" x="743" y="243" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="676" y="222" width="90" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="ExclusiveGateway_102m6h6_di" bpmnElement="ExclusiveGateway_102m6h6" isMarkerVisible="true">
+        <dc:Bounds x="743" y="218" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="733" y="272" width="71" height="36" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_0wzfm42_di" bpmnElement="SequenceFlow_0wzfm42">
+        <di:waypoint xsi:type="dc:Point" x="768" y="218" />
+        <di:waypoint xsi:type="dc:Point" x="768" y="108" />
+        <di:waypoint xsi:type="dc:Point" x="907" y="108" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="770" y="157" width="26" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_15j8kfa_di" bpmnElement="SequenceFlow_15j8kfa">
+        <di:waypoint xsi:type="dc:Point" x="793" y="243" />
+        <di:waypoint xsi:type="dc:Point" x="907" y="243" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="840" y="222" width="22" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_0dvoybb_di" bpmnElement="SequenceFlow_0dvoybb">
+        <di:waypoint xsi:type="dc:Point" x="768" y="268" />
+        <di:waypoint xsi:type="dc:Point" x="768" y="366" />
+        <di:waypoint xsi:type="dc:Point" x="907" y="366" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="755" y="311" width="58" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="ExclusiveGateway_1j6gdd9_di" bpmnElement="ExclusiveGateway_1j6gdd9" isMarkerVisible="true">
+        <dc:Bounds x="1255" y="218" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1280" y="272" width="0" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_03lhkbg_di" bpmnElement="SequenceFlow_03lhkbg">
+        <di:waypoint xsi:type="dc:Point" x="1190" y="243" />
+        <di:waypoint xsi:type="dc:Point" x="1255" y="243" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1222.5" y="222" width="0" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_0jftaq8_di" bpmnElement="SequenceFlow_0jftaq8">
+        <di:waypoint xsi:type="dc:Point" x="1305" y="243" />
+        <di:waypoint xsi:type="dc:Point" x="1407" y="243" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1328.8311688311687" y="222" width="55" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_0fzxbk7_di" bpmnElement="SequenceFlow_0fzxbk7">
+        <di:waypoint xsi:type="dc:Point" x="1280" y="268" />
+        <di:waypoint xsi:type="dc:Point" x="1280" y="463" />
+        <di:waypoint xsi:type="dc:Point" x="-57" y="463" />
+        <di:waypoint xsi:type="dc:Point" x="-57" y="283" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="611.5" y="442" width="0" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="ScriptTask_0rqdg7u_di" bpmnElement="Task_0fbs6zs">
+        <dc:Bounds x="1090" y="203" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_0982okf_di" bpmnElement="SequenceFlow_0982okf">
+        <di:waypoint xsi:type="dc:Point" x="1007" y="243" />
+        <di:waypoint xsi:type="dc:Point" x="1090" y="243" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1048.5" y="222" width="0" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="ServiceTask_0jiddlb_di" bpmnElement="Task_1usxx24">
+        <dc:Bounds x="907" y="203" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ServiceTask_1jhwccj_di" bpmnElement="Task_0yx73bt">
+        <dc:Bounds x="907" y="326" width="100" height="80" />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
